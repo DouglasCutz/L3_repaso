@@ -52,7 +52,11 @@ namespace L3_repaso
             this.button1 = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btn_reporte = new System.Windows.Forms.Button();
+            this.btn_ordenar = new System.Windows.Forms.Button();
+            this.btn_masprop = new System.Windows.Forms.Button();
+            this.btn_altasYbajas = new System.Windows.Forms.Button();
+            this.btn_cuotaMasAlta = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -96,7 +100,7 @@ namespace L3_repaso
             this.menuToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(945, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1088, 28);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -180,7 +184,7 @@ namespace L3_repaso
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(521, 233);
+            this.dataGridView1.Size = new System.Drawing.Size(614, 233);
             this.dataGridView1.TabIndex = 9;
             // 
             // tx_cuota
@@ -248,34 +252,79 @@ namespace L3_repaso
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 51;
             this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(521, 233);
+            this.dataGridView2.Size = new System.Drawing.Size(614, 233);
             this.dataGridView2.TabIndex = 17;
             // 
             // dataGridView3
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(319, 657);
+            this.dataGridView3.Location = new System.Drawing.Point(336, 657);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(579, 256);
+            this.dataGridView3.Size = new System.Drawing.Size(614, 256);
             this.dataGridView3.TabIndex = 18;
             // 
-            // button2
+            // btn_reporte
             // 
-            this.button2.Location = new System.Drawing.Point(181, 657);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(83, 29);
-            this.button2.TabIndex = 19;
-            this.button2.Text = "Mostrar";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btn_reporte.Location = new System.Drawing.Point(156, 657);
+            this.btn_reporte.Name = "btn_reporte";
+            this.btn_reporte.Size = new System.Drawing.Size(147, 37);
+            this.btn_reporte.TabIndex = 19;
+            this.btn_reporte.Text = "Generar reporte";
+            this.btn_reporte.UseVisualStyleBackColor = true;
+            this.btn_reporte.Click += new System.EventHandler(this.btn_reporte_Click);
+            // 
+            // btn_ordenar
+            // 
+            this.btn_ordenar.Location = new System.Drawing.Point(156, 712);
+            this.btn_ordenar.Name = "btn_ordenar";
+            this.btn_ordenar.Size = new System.Drawing.Size(147, 41);
+            this.btn_ordenar.TabIndex = 20;
+            this.btn_ordenar.Text = "Ordenar por cuota";
+            this.btn_ordenar.UseVisualStyleBackColor = true;
+            this.btn_ordenar.Click += new System.EventHandler(this.btn_ordenar_Click);
+            // 
+            // btn_masprop
+            // 
+            this.btn_masprop.Location = new System.Drawing.Point(156, 782);
+            this.btn_masprop.Name = "btn_masprop";
+            this.btn_masprop.Size = new System.Drawing.Size(147, 47);
+            this.btn_masprop.TabIndex = 21;
+            this.btn_masprop.Text = "Propietario con mas propiedades";
+            this.btn_masprop.UseVisualStyleBackColor = true;
+            this.btn_masprop.Click += new System.EventHandler(this.btn_masprop_Click);
+            // 
+            // btn_altasYbajas
+            // 
+            this.btn_altasYbajas.Location = new System.Drawing.Point(156, 848);
+            this.btn_altasYbajas.Name = "btn_altasYbajas";
+            this.btn_altasYbajas.Size = new System.Drawing.Size(147, 42);
+            this.btn_altasYbajas.TabIndex = 22;
+            this.btn_altasYbajas.Text = "3 Cuotas mas altas y bajas";
+            this.btn_altasYbajas.UseVisualStyleBackColor = true;
+            this.btn_altasYbajas.Click += new System.EventHandler(this.btn_altasYbajas_Click);
+            // 
+            // btn_cuotaMasAlta
+            // 
+            this.btn_cuotaMasAlta.Location = new System.Drawing.Point(156, 906);
+            this.btn_cuotaMasAlta.Name = "btn_cuotaMasAlta";
+            this.btn_cuotaMasAlta.Size = new System.Drawing.Size(147, 43);
+            this.btn_cuotaMasAlta.TabIndex = 23;
+            this.btn_cuotaMasAlta.Text = "Prop. con la cuota mas alta";
+            this.btn_cuotaMasAlta.UseVisualStyleBackColor = true;
+            this.btn_cuotaMasAlta.Click += new System.EventHandler(this.btn_cuotaMasAlta_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(945, 1055);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(1088, 1055);
+            this.Controls.Add(this.btn_cuotaMasAlta);
+            this.Controls.Add(this.btn_altasYbajas);
+            this.Controls.Add(this.btn_masprop);
+            this.Controls.Add(this.btn_ordenar);
+            this.Controls.Add(this.btn_reporte);
             this.Controls.Add(this.dataGridView3);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.tx_cuota);
@@ -334,7 +383,11 @@ namespace L3_repaso
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.DataGridView dataGridView3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btn_reporte;
+        private System.Windows.Forms.Button btn_ordenar;
+        private System.Windows.Forms.Button btn_masprop;
+        private System.Windows.Forms.Button btn_altasYbajas;
+        private System.Windows.Forms.Button btn_cuotaMasAlta;
     }
 }
 

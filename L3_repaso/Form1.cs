@@ -126,9 +126,10 @@ namespace L3_repaso
         {
             dataGridView3.DataSource = null;
             dataGridView3.DataSource = reportes;
+            dataGridView3.Columns[0].Visible = false;
             dataGridView3.Refresh();
         }
-        void GuardarCTR(String archivo, String dpi, String nom, String ape,String numcasa, String cuota,int contador, int total  )
+        void GuardarCTR(String archivo, String dpi, String nom, String ape,String numcasa, String cuota)
         {
             //Abrir el archivo: Write sobreescribe el archivo, Append agrega los datos al final del archivo
             FileStream stream = new FileStream(archivo, FileMode.Append, FileAccess.Write);
@@ -142,8 +143,7 @@ namespace L3_repaso
             writer.WriteLine(ape);
             writer.WriteLine(numcasa);
             writer.WriteLine(cuota);
-            writer.WriteLine(contador);
-            writer.WriteLine(total);
+           
 
             //Cerrar el archivo
             writer.Close();
@@ -166,8 +166,7 @@ namespace L3_repaso
                 ctrl.Apellido = reader.ReadLine();
                 ctrl.Numcasa = reader.ReadLine();
                 ctrl.Cuota = Convert.ToInt32(reader.ReadLine());
-                ctrl.Contador = Convert.ToInt32(reader.ReadLine());
-                ctrl.Ctotal = Convert.ToInt32(reader.ReadLine());
+               
                 reportes.Add(ctrl);
             }
             //Cerrar el archivo, esta linea es importante porque sino despues de correr varias veces el programa daría error de que el archivo quedó abierto muchas veces. Entonces es necesario cerrarlo despues de terminar de leerlo.
@@ -199,6 +198,8 @@ namespace L3_repaso
             MostrarPro();
             CargarPP("Propiedades.txt");
             MostrarPP();
+            //CargarCTR("Reportes.txt");
+            //MostrarCTR();
         }
 
         private void propiedadesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -259,49 +260,6 @@ namespace L3_repaso
                     MessageBox.Show(" Agregado correctamente");
                     MostrarPP();
                     GuardarPP("Propiedades.txt", tx_numcasa.Text, tx_dpidueño.Text, tx_cuota.Text);
-
-                    for (int i = 0; i < propietarios.Count; i++)
-                    {
-                        for (int j = 0; j < Propiedades.Count; j++)
-                        {
-                            if (propietarios[i].Dpi == Propiedades[j].Dpi)
-                            {
-                                bool band = false;
-                                for (int x = 0; x < reportes.Count; x++)
-                                {
-                                    if (propiedades.Dpi == reportes[x].Dpi)
-                                        band = true;
-                                }
-                                if (band == true)
-                                {
-                                    Control c1 = new Control();
-
-                                    c1.Dpi = propietarios[i].Dpi;
-                                    c1.Nombre = propietarios[i].Nombre;
-                                    c1.Apellido = propietarios[i].Apellido;
-                                    c1.Numcasa = Propiedades[j].Numcasa;  // i o j ?
-                                    c1.Cuota = Propiedades[j].Cuota;
-                                    c1.Contador++;
-                                    c1.Ctotal += Propiedades[j].Cuota;
-                                    reportes.Add(c1);
-                                }
-                                else
-                                {
-                                    Control c1 = new Control();
-
-                                    c1.Dpi = propietarios[i].Dpi;
-                                    c1.Nombre = propietarios[i].Nombre;
-                                    c1.Apellido = propietarios[i].Apellido;
-                                    c1.Numcasa = Propiedades[j].Numcasa;  // i o j ?
-                                    c1.Cuota = Propiedades[j].Cuota;
-                                    c1.Contador =0;
-                                    c1.Ctotal =Propiedades[j].Cuota;
-                                    reportes.Add(c1);
-                                }
-                            }
-                        }
-                    }
-                    MostrarCTR();
                     LimpiarPP();
                 }
                 else
@@ -309,6 +267,124 @@ namespace L3_repaso
             }
             else
                 MessageBox.Show(" Por favor registre DPI del propietario primero");
+        }
+
+        private void btn_reporte_Click(object sender, EventArgs e)
+        {
+            reportes.Clear();
+
+            foreach (var propiedad in Propiedades)
+            {
+                Control reporte = new Control();
+
+                Propietario propietario = propietarios.Find(p => p.Dpi == propiedad.Dpi);
+
+                reporte.Dpi = propietario.Dpi;
+                reporte.Nombre = propietario.Nombre;
+                reporte.Apellido = propietario.Apellido;
+                reporte.Numcasa = propiedad.Numcasa;
+                reporte.Cuota = propiedad.Cuota;
+
+                reportes.Add(reporte);
+                //GuardarCTR("Reportes.txt", reporte.Dpi, reporte.Nombre, reporte.Apellido, reporte.Numcasa, "" + reporte.Cuota);
+            }
+            MostrarCTR();
+        }
+
+        private void btn_ordenar_Click(object sender, EventArgs e)
+        {
+            reportes = reportes.OrderBy(r => r.Cuota).ToList();
+            MostrarCTR();
+        }
+
+        private void btn_masprop_Click(object sender, EventArgs e)
+        {
+            //a la clase Reporte se le incluyo el DPI para poder
+            //ver cuantas propiedades tiene un dueño sin depender 
+            //de su nombre y apellido
+
+            //Se agrupan los datos del reporte por DPI
+            //Esto devuelve una lista que en cada posición contiene una sublista
+            // con todas las propiedades que tienen el mismo dpi
+            var repetidos = reportes.GroupBy(r => r.Dpi);
+
+            //se supone un cantidad de 0 propiedades
+            int max = 0;
+            //en la posición 0
+            int pos = 0;
+
+            //se recorren los datos agrupados
+            for (int i = 0; i < repetidos.Count(); i++)
+            {
+                //si la cantidad de datos que tiene es mayor al mayor 
+                //esa cantidad se considera la nueva mayor y se guarda
+                //la posición en la que se encontró
+                if (repetidos.ToList()[i].Count() > max)
+                {
+                    max = repetidos.ToList()[i].Count();
+                    pos = i;
+                }
+            }
+
+            //en Key queda guardado el dato por el cual se agrupo
+            //en este caso agrupamos por DPI
+            //labelPropietario.Text = "El DPI: " + repetidos.ToList()[pos].Key;
+            //En max se guardó el número de propiedades que tenía cada DPI
+            //labelPropiedades.Text = "Tiene " + max.ToString() + " Propiedades";
+
+            MessageBox.Show("El DPI: " + repetidos.ToList()[pos].Key + "\nTiene: " + max.ToString() + " Propiedades","Propietario con mas propiedades");
+        }
+
+        private void btn_altasYbajas_Click(object sender, EventArgs e)
+        {
+            reportes = reportes.OrderBy(r => r.Cuota).ToList();
+
+            int cuantos = reportes.Count();
+
+            MessageBox.Show("Más Bajas: " + reportes[0].Cuota.ToString() + "," + reportes[1].Cuota.ToString() + "," + reportes[2].Cuota.ToString(),"3 CUOTAS MAS BAJAS");
+            MessageBox.Show("Más Altas: " + reportes[cuantos - 1].Cuota.ToString() + "," + reportes[cuantos - 2].Cuota.ToString() + "," + reportes[cuantos - 3].Cuota.ToString(),"3 CUOTAS MAS ALTAS");
+        }
+
+        private void btn_cuotaMasAlta_Click(object sender, EventArgs e)
+        {
+            //Se agrupan los datos del reporte por DPI:
+            //Esto devuelve una lista que en cada posición contiene una sublista
+            //con todas las propiedades que tienen el mismo dpi
+            var agrupado = reportes.GroupBy(r => r.Dpi);
+
+            //inciar con una cuota mayor de 0 y un dpi vacio
+            double maxCuota = 0;
+            string maxDpi = "";
+
+
+            //Recorrer cada dato agrupado
+            foreach (var grupo in agrupado)
+            {
+
+                double sumaCuota = 0;
+                string dpi = "";
+
+                //se recorren cada propiedad que hay en el grupo con el mismo dpi
+                //y se va sumando el total de cuotas de cada una de esas propiedades
+                //y se guarda el dpi de ese grupo
+                foreach (var p in grupo)
+                {
+                    sumaCuota += p.Cuota;
+                    dpi = p.Dpi;
+                }
+
+                //si la suma de las cuotas del dpi actual es mayor que la cuota mayor
+                //la suma de la cuota se convirte en la cuota mayor
+                //y se guarda el dpi de esa suma de cuotas
+                if (sumaCuota > maxCuota)
+                {
+                    maxCuota = sumaCuota;
+                    maxDpi = dpi;
+                }
+            }
+            MessageBox.Show("DPI: " + maxDpi + "\nCuota: "+ maxCuota.ToString(),"Prop. con la cuota mas alta");
+
+            
         }
     }
 }
