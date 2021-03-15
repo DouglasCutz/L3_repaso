@@ -15,6 +15,7 @@ namespace L3_repaso
     {
           List<Propietario> propietarios = new List<Propietario>();
           List<Propiedades> Propiedades = new List<Propiedades>();
+          List<Control> reportes = new List<Control>();
         public Form1()
         {
             InitializeComponent();
@@ -121,6 +122,57 @@ namespace L3_repaso
             //Cerrar el archivo, esta linea es importante porque sino despues de correr varias veces el programa daría error de que el archivo quedó abierto muchas veces. Entonces es necesario cerrarlo despues de terminar de leerlo.
             reader.Close();
         }
+        void MostrarCTR()
+        {
+            dataGridView3.DataSource = null;
+            dataGridView3.DataSource = reportes;
+            dataGridView3.Refresh();
+        }
+        void GuardarCTR(String archivo, String dpi, String nom, String ape,String numcasa, String cuota,int contador, int total  )
+        {
+            //Abrir el archivo: Write sobreescribe el archivo, Append agrega los datos al final del archivo
+            FileStream stream = new FileStream(archivo, FileMode.Append, FileAccess.Write);
+            //Crear un objeto para escribir el archivo
+            StreamWriter writer = new StreamWriter(stream);
+            //Usar el objeto para escribir al archivo, WriteLine, escribe linea por linea
+            //Write escribe todo en la misma linea. En este ejemplo se hará un dato por cada línea
+            //writer.WriteLine(texto);
+            writer.WriteLine(dpi);
+            writer.WriteLine(nom);
+            writer.WriteLine(ape);
+            writer.WriteLine(numcasa);
+            writer.WriteLine(cuota);
+            writer.WriteLine(contador);
+            writer.WriteLine(total);
+
+            //Cerrar el archivo
+            writer.Close();
+        }
+        void CargarCTR(string filename)
+        {
+            //Abrimos el archivo, en este caso lo abrimos para lectura
+            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+
+            //Un ciclo para leer el archivo hasta el final del archivo
+            //Lo leído se va guardando en un control richTextBox
+            while (reader.Peek() > -1)
+            //Esta linea envía el texto leído a un control richTextBox, se puede cambiar para que
+            //lo muestre en otro control por ejemplo un combobox
+            {
+                Control ctrl = new Control();
+                ctrl.Dpi = reader.ReadLine();
+                ctrl.Nombre = reader.ReadLine();
+                ctrl.Apellido = reader.ReadLine();
+                ctrl.Numcasa = reader.ReadLine();
+                ctrl.Cuota = Convert.ToInt32(reader.ReadLine());
+                ctrl.Contador = Convert.ToInt32(reader.ReadLine());
+                ctrl.Ctotal = Convert.ToInt32(reader.ReadLine());
+                reportes.Add(ctrl);
+            }
+            //Cerrar el archivo, esta linea es importante porque sino despues de correr varias veces el programa daría error de que el archivo quedó abierto muchas veces. Entonces es necesario cerrarlo despues de terminar de leerlo.
+            reader.Close();
+        }
         private void btn_ingresar_Click(object sender, EventArgs e)
         {
             Propietario propietario = new Propietario();
@@ -207,6 +259,49 @@ namespace L3_repaso
                     MessageBox.Show(" Agregado correctamente");
                     MostrarPP();
                     GuardarPP("Propiedades.txt", tx_numcasa.Text, tx_dpidueño.Text, tx_cuota.Text);
+
+                    for (int i = 0; i < propietarios.Count; i++)
+                    {
+                        for (int j = 0; j < Propiedades.Count; j++)
+                        {
+                            if (propietarios[i].Dpi == Propiedades[j].Dpi)
+                            {
+                                bool band = false;
+                                for (int x = 0; x < reportes.Count; x++)
+                                {
+                                    if (propiedades.Dpi == reportes[x].Dpi)
+                                        band = true;
+                                }
+                                if (band == true)
+                                {
+                                    Control c1 = new Control();
+
+                                    c1.Dpi = propietarios[i].Dpi;
+                                    c1.Nombre = propietarios[i].Nombre;
+                                    c1.Apellido = propietarios[i].Apellido;
+                                    c1.Numcasa = Propiedades[j].Numcasa;  // i o j ?
+                                    c1.Cuota = Propiedades[j].Cuota;
+                                    c1.Contador++;
+                                    c1.Ctotal += Propiedades[j].Cuota;
+                                    reportes.Add(c1);
+                                }
+                                else
+                                {
+                                    Control c1 = new Control();
+
+                                    c1.Dpi = propietarios[i].Dpi;
+                                    c1.Nombre = propietarios[i].Nombre;
+                                    c1.Apellido = propietarios[i].Apellido;
+                                    c1.Numcasa = Propiedades[j].Numcasa;  // i o j ?
+                                    c1.Cuota = Propiedades[j].Cuota;
+                                    c1.Contador =0;
+                                    c1.Ctotal =Propiedades[j].Cuota;
+                                    reportes.Add(c1);
+                                }
+                            }
+                        }
+                    }
+                    MostrarCTR();
                     LimpiarPP();
                 }
                 else
